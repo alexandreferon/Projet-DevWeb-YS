@@ -4,8 +4,7 @@ $utilisateur = "root";
 $mot_de_passe = "root";
 $base_de_donnees = "ys_database";
 
-// Essaie le port 3306 (Windows/Linux), sinon 8889 (MAMP Mac)
-$port = 3306;
+
 $connexion = @mysqli_connect($serveur, $utilisateur, $mot_de_passe, $base_de_donnees, $port);
 
 if (!$connexion) {
