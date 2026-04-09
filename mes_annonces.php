@@ -51,7 +51,7 @@ $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
     <p class="success">Annonce publiée avec succès !</p>
 <?php endif; ?>
 
-<a href="annonce.php" class="btn-nouvelle">+ Nouvelle annonce</a>
+<a href="creer_annonce.php" class="btn-nouvelle">+ Nouvelle annonce</a>
 
 <?php if (empty($annonces)): ?>
     <p class="vide">Tu n'as pas encore d'annonces.</p>

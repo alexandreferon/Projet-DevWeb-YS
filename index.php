@@ -35,7 +35,7 @@ $role_affichage = ($_SESSION['user_role'] == 2) ? "Administrateur" : "Membre";
     <div class="container">
         <a class="navbar-brand fw-bold" href="#">YS</a>
         <div class="d-flex align-items-center">
-            <a href="creer_annonce.php" class="btn btn-outline-light btn-sm me-3">Publier une annonce</a>
+            <a href="mes_annonces.php" class="btn btn-outline-light btn-sm me-3">Publier une annonce</a>
             <a href="deconnexion.php" class="btn btn-danger btn-sm">Se déconnecter</a>
         </div>
     </div>
