@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.3
+-- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- Hôte : localhost:8889
--- Généré le : mar. 07 avr. 2026 à 14:08
--- Version du serveur : 8.0.44
--- Version de PHP : 8.3.28
+-- Hôte : localhost:3306
+-- Généré le : ven. 10 avr. 2026 à 18:02
+-- Version du serveur : 5.7.24
+-- Version de PHP : 8.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,15 +28,22 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `annonces` (
-  `id` int NOT NULL,
-  `user_id` int NOT NULL,
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
   `titre` varchar(255) NOT NULL,
   `prix` decimal(10,2) NOT NULL,
   `etat` enum('neuf','bon état','correct') NOT NULL,
   `description` text NOT NULL,
   `image_url` varchar(255) DEFAULT NULL,
   `date_publication` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `annonces`
+--
+
+INSERT INTO `annonces` (`id`, `user_id`, `titre`, `prix`, `etat`, `description`, `image_url`, `date_publication`) VALUES
+(2, 15, 'arbre', '200.00', 'neuf', 'rfh', 'uploads/annonces/img_69d6414c1db0e.webp', '2026-04-08 11:51:40');
 
 -- --------------------------------------------------------
 
@@ -45,10 +52,10 @@ CREATE TABLE `annonces` (
 --
 
 CREATE TABLE `favoris` (
-  `id` int NOT NULL,
-  `utilisateur_id` int NOT NULL,
-  `annonce_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id` int(11) NOT NULL,
+  `utilisateur_id` int(11) NOT NULL,
+  `annonce_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -57,12 +64,12 @@ CREATE TABLE `favoris` (
 --
 
 CREATE TABLE `messages` (
-  `id` int NOT NULL,
-  `expediteur_id` int NOT NULL,
-  `destinataire_id` int NOT NULL,
+  `id` int(11) NOT NULL,
+  `expediteur_id` int(11) NOT NULL,
+  `destinataire_id` int(11) NOT NULL,
   `contenu` text NOT NULL,
   `date_envoi` timestamp NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -71,9 +78,9 @@ CREATE TABLE `messages` (
 --
 
 CREATE TABLE `user_roles` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `nom_role` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `user_roles`
@@ -90,14 +97,14 @@ INSERT INTO `user_roles` (`id`, `nom_role`) VALUES
 --
 
 CREATE TABLE `utilisateurs` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `nom` varchar(100) NOT NULL,
   `email` varchar(150) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role` enum('membre','admin') DEFAULT 'membre',
   `avatar` varchar(255) DEFAULT 'default_avatar.png',
-  `role_id` int DEFAULT '1'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `role_id` int(11) DEFAULT '1'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `utilisateurs`
@@ -106,7 +113,8 @@ CREATE TABLE `utilisateurs` (
 INSERT INTO `utilisateurs` (`id`, `nom`, `email`, `password`, `role`, `avatar`, `role_id`) VALUES
 (2, 'yass', 'uuuuu@ys.com', '$2y$10$ie0vXhZ0ZxfwdY/l70pBe.km1BQtAIerQVCu4u7EKZ.sr52vXbvKC', 'membre', 'default_avatar.png', 1),
 (12, 'yyyy', 'new@ys.com', '$2y$10$gzqhQBNROtOiOlWUmpjfZeqT9hGusFIkzEg6BUbOETgSvfyxad3U2', 'membre', 'default_avatar.png', 1),
-(14, 'lolo', 'lolo@ys.com', '$2y$10$P4JSWzdeRUfm/Qgq1P1HPeXnWaTnnyo6SMdCOKoAWdAcACeQF0iDa', 'membre', 'default_avatar.png', 1);
+(14, 'lolo', 'lolo@ys.com', '$2y$10$P4JSWzdeRUfm/Qgq1P1HPeXnWaTnnyo6SMdCOKoAWdAcACeQF0iDa', 'membre', 'default_avatar.png', 1),
+(15, 'Alexandre', 'alexandre.feron@edu.ece.fr', '$2y$10$1Blzx2dBMXHM7Q0PVfD5veNz3cRcw3DCYBa16DcCWWX8aV5BJjcca', 'membre', 'default_avatar.png', 1);
 
 --
 -- Index pour les tables déchargées
@@ -156,31 +164,31 @@ ALTER TABLE `utilisateurs`
 -- AUTO_INCREMENT pour la table `annonces`
 --
 ALTER TABLE `annonces`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `favoris`
 --
 ALTER TABLE `favoris`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT pour la table `user_roles`
 --
 ALTER TABLE `user_roles`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Contraintes pour les tables déchargées
