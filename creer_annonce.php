@@ -47,6 +47,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="utf-8">
     <title>Déposer une annonce</title>
 </head>
+<nav class="navbar navbar-expand-lg navbar-dark ys-navbar shadow-sm">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">YS</a>
+        <div class="d-flex align-items-center">
+            <a href="mes_annonces.php" class="btn btn-outline-light btn-sm me-3">Publier une annonce</a>
+            <a href="deconnexion.php" class="btn btn-danger btn-sm">Se déconnecter</a>
+        </div>
+    </div>
+</nav>
 <body>
 
 <form action="creer_annonce.php" method="POST" enctype="multipart/form-data">
