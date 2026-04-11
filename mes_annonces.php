@@ -2,20 +2,17 @@
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: connexion.php');
     exit;
 }
 
-$host = 'localhost';
-$db   = 'ys_database';
-$user = 'root';
-$pass = 'root';
-$pdo  = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
-$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+include('config/db_connect.php');
 
-$stmt = $pdo->prepare("SELECT * FROM annonces WHERE user_id = :user_id ORDER BY date_publication DESC");
-$stmt->execute([':user_id' => $_SESSION['user_id']]);
-$annonces = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt = mysqli_prepare($connexion, "SELECT * FROM annonces WHERE user_id = ? ORDER BY date_publication DESC");
+mysqli_stmt_bind_param($stmt, "i", $_SESSION['user_id']);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$annonces = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
 ?>

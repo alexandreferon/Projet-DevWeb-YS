@@ -1,20 +1,14 @@
 <?php
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
 session_start();
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: connexion.php');
     exit;
 }
 
+include('config/db_connect.php');
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $host = 'localhost';
-    $db   = 'ys_database';
-    $user = 'root';
-    $pass = 'root';
-    $pdo  = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     $titre       = trim($_POST['titre']);
     $prix        = floatval($_POST['prix']);
@@ -38,18 +32,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $image_url = $upload_dir . $filename;
     }
 
-    $stmt = $pdo->prepare("
-        INSERT INTO annonces (user_id, titre, prix, etat, description, image_url)
-        VALUES (:user_id, :titre, :prix, :etat, :description, :image_url)
-    ");
-    $stmt->execute([
-        ':user_id'     => $user_id,
-        ':titre'       => $titre,
-        ':prix'        => $prix,
-        ':etat'        => $etat,
-        ':description' => $description,
-        ':image_url'   => $image_url,
-    ]);
+    $stmt = mysqli_prepare($connexion, "INSERT INTO annonces (user_id, titre, prix, etat, description, image_url) VALUES (?, ?, ?, ?, ?, ?)");
+    mysqli_stmt_bind_param($stmt, "isdsss", $user_id, $titre, $prix, $etat, $description, $image_url);
+    mysqli_stmt_execute($stmt);
 
     header('Location: mes_annonces.php?success=1');
     exit;
@@ -64,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<form action="annonce.php" method="POST" enctype="multipart/form-data">
+<form action="creer_annonce.php" method="POST" enctype="multipart/form-data">
 
     <label for="titre">Titre</label>
     <input required type="text" name="titre" id="titre" placeholder="Nom de l'article">
