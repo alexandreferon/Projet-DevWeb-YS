@@ -1,27 +1,39 @@
 
 <?php
-require 'config.php';
+session_start();
+require 'config/db_connect.php';
+
+$base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
 
 // COMPTEUR FAVORIS
-$count = $pdo->query("SELECT COUNT(*) FROM favoris")->fetchColumn();
+$count_result = mysqli_query($connexion, "SELECT COUNT(*) FROM favoris");
+$count = mysqli_fetch_row($count_result)[0];
 
-// RECHERCHE + FILTRE
+// RECHERCHE
 if (isset($_GET['q']) && $_GET['q'] != "") {
-    $q = $_GET['q'];
-    $stmt = $pdo->prepare("SELECT * FROM annonces WHERE titre LIKE ?");
-    $stmt->execute(["%$q%"]);
-    $annonces = $stmt->fetchAll();
-
-} elseif (isset($_GET['cat'])) {
-    $cat = $_GET['cat'];
-    $stmt = $pdo->prepare("SELECT * FROM annonces WHERE categorie = ?");
-    $stmt->execute([$cat]);
-    $annonces = $stmt->fetchAll();
-
+    $q = "%" . $_GET['q'] . "%";
+    $stmt = mysqli_prepare($connexion, "SELECT * FROM annonces WHERE titre LIKE ?");
+    mysqli_stmt_bind_param($stmt, "s", $q);
+    mysqli_stmt_execute($stmt);
+    $annonces = mysqli_fetch_all(mysqli_stmt_get_result($stmt), MYSQLI_ASSOC);
 } else {
-    $annonces = $pdo->query("SELECT * FROM annonces ORDER BY id DESC")->fetchAll();
+    $result = mysqli_query($connexion, "SELECT * FROM annonces ORDER BY id DESC");
+    $annonces = mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YS Market</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { background: linear-gradient(120deg, #f6f7fb, #e9ecf5); font-family: 'Segoe UI', sans-serif; }
+    .hero { background: linear-gradient(135deg, #000, #2c2c2c); color: white; padding: 70px; border-radius: 20px; margin-bottom: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); }
+    .card { border: none; border-radius: 20px; overflow: hidden; transition: 0.4s; animation: fadeInUp 0.6s ease; }
+    .card:hover { transform: translateY(-10px) scale(1.03); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .card img { height: 220px; object-fit: cover; }
+    .btn-warning
 
 <!DOCTYPE html>
 <html>
@@ -129,9 +141,9 @@ body {
 
 <!-- FILTRE -->
 <div class="mb-4">
-  <a href="index.php?cat=Voiture" class="btn btn-outline-dark">Voiture</a>
-  <a href="index.php?cat=Maison" class="btn btn-outline-dark">Maison</a>
-  <a href="index.php?cat=Electronique" class="btn btn-outline-dark">Electronique</a>
+  <a href="recherche.php?cat=Voiture" class="btn btn-outline-dark">Voiture</a>
+  <a href="recherche.php?cat=Maison" class="btn btn-outline-dark">Maison</a>
+  <a href="recherche.php?cat=Electronique" class="btn btn-outline-dark">Electronique</a>
 </div>
 
 <!-- ANNONCES -->
@@ -142,7 +154,7 @@ body {
   <div class="col-md-4">
     <div class="card shadow mb-4">
 
-      <img src="<?= $a['image'] ?>">
+      <img src="<?= $a['image_url'] ?>">
 
       <div class="card-body">
 
