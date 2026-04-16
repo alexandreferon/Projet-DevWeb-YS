@@ -1,13 +1,15 @@
 <?php
-require 'config.php';
+require 'config/db_connect.php';
 
 if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+    $annonce_id = $_GET['id'];
+    $utilisateur_id = 15; // Exemple.
 
-    $pdo->prepare("INSERT INTO favoris (annonce_id) VALUES (?)")
-        ->execute([$id]);
+    $query = "INSERT INTO favoris (utilisateur_id, annonce_id) VALUES (?, ?)";
+    $stmt = mysqli_prepare($connexion, $query);
+    mysqli_stmt_bind_param($stmt, "ii", $utilisateur_id, $annonce_id);
+    mysqli_stmt_execute($stmt);
 }
 
-// REDIRECTION AVEC MESSAGE
-header("Location: index.php?success=1");
+header("Location: recherche.php?success=1");
 exit;
