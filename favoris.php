@@ -34,6 +34,8 @@ $resultat = mysqli_stmt_get_result($stmt);
 </head>
 <body>
 
+
+
 <nav class="navbar navbar-expand-lg navbar-dark ys-navbar shadow-sm mb-4">
     <div class="container">
         <a class="navbar-brand fw-bold" href="index.php">YS</a>
@@ -43,6 +45,8 @@ $resultat = mysqli_stmt_get_result($stmt);
         </div>
     </div>
 </nav>
+
+<a href="recherche.php" class="btn btn-secondary mb-3">⬅ Retour</a>
 
 <div class="container">
     <h2 class="mb-4">Mes favoris ❤️</h2>
