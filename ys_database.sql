@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : ven. 10 avr. 2026 à 18:02
+-- Généré le : jeu. 16 avr. 2026 à 19:18
 -- Version du serveur : 5.7.24
 -- Version de PHP : 8.3.1
 
@@ -43,7 +43,9 @@ CREATE TABLE `annonces` (
 --
 
 INSERT INTO `annonces` (`id`, `user_id`, `titre`, `prix`, `etat`, `description`, `image_url`, `date_publication`) VALUES
-(2, 15, 'arbre', '200.00', 'neuf', 'rfh', 'uploads/annonces/img_69d6414c1db0e.webp', '2026-04-08 11:51:40');
+(3, 15, 'tablette', '249.99', 'correct', 'une belle tablette pas moche', 'uploads/annonces/img_69da343dac051.jpg', '2026-04-11 11:20:31'),
+(4, 15, 'poster', '9.99', 'neuf', 'beau & grand', 'uploads/annonces/img_69e0ee44300db.png', '2026-04-16 14:12:20'),
+(5, 16, 'truc', '1.00', 'neuf', 'eg', 'uploads/annonces/img_69e114785c828.png', '2026-04-16 16:55:20');
 
 -- --------------------------------------------------------
 
@@ -57,6 +59,15 @@ CREATE TABLE `favoris` (
   `annonce_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Déchargement des données de la table `favoris`
+--
+
+INSERT INTO `favoris` (`id`, `utilisateur_id`, `annonce_id`) VALUES
+(36, 15, 5),
+(37, 16, 4),
+(38, 16, 3);
+
 -- --------------------------------------------------------
 
 --
@@ -65,11 +76,20 @@ CREATE TABLE `favoris` (
 
 CREATE TABLE `messages` (
   `id` int(11) NOT NULL,
+  `id_annonce` int(11) NOT NULL,
   `expediteur_id` int(11) NOT NULL,
   `destinataire_id` int(11) NOT NULL,
   `contenu` text NOT NULL,
   `date_envoi` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `messages`
+--
+
+INSERT INTO `messages` (`id`, `id_annonce`, `expediteur_id`, `destinataire_id`, `contenu`, `date_envoi`) VALUES
+(1, 4, 16, 15, 'salut beau gosse', '2026-04-16 19:15:53'),
+(2, 3, 16, 15, 'yo', '2026-04-16 19:16:17');
 
 -- --------------------------------------------------------
 
@@ -114,7 +134,8 @@ INSERT INTO `utilisateurs` (`id`, `nom`, `email`, `password`, `role`, `avatar`, 
 (2, 'yass', 'uuuuu@ys.com', '$2y$10$ie0vXhZ0ZxfwdY/l70pBe.km1BQtAIerQVCu4u7EKZ.sr52vXbvKC', 'membre', 'default_avatar.png', 1),
 (12, 'yyyy', 'new@ys.com', '$2y$10$gzqhQBNROtOiOlWUmpjfZeqT9hGusFIkzEg6BUbOETgSvfyxad3U2', 'membre', 'default_avatar.png', 1),
 (14, 'lolo', 'lolo@ys.com', '$2y$10$P4JSWzdeRUfm/Qgq1P1HPeXnWaTnnyo6SMdCOKoAWdAcACeQF0iDa', 'membre', 'default_avatar.png', 1),
-(15, 'Alexandre', 'alexandre.feron@edu.ece.fr', '$2y$10$1Blzx2dBMXHM7Q0PVfD5veNz3cRcw3DCYBa16DcCWWX8aV5BJjcca', 'membre', 'default_avatar.png', 1);
+(15, 'Alexandre', 'alexandre.feron@edu.ece.fr', '$2y$10$1Blzx2dBMXHM7Q0PVfD5veNz3cRcw3DCYBa16DcCWWX8aV5BJjcca', 'membre', 'default_avatar.png', 1),
+(16, 'homme', 'a@gmail.com', '$2y$10$A.lM.lGFWNjOC0y5DpmRi.DOckfmea.n8NTVbMsIMxpiI5AqFHV1m', 'admin', 'default_avatar.png', 1);
 
 --
 -- Index pour les tables déchargées
@@ -140,7 +161,8 @@ ALTER TABLE `favoris`
 ALTER TABLE `messages`
   ADD PRIMARY KEY (`id`),
   ADD KEY `expediteur_id` (`expediteur_id`),
-  ADD KEY `destinataire_id` (`destinataire_id`);
+  ADD KEY `destinataire_id` (`destinataire_id`),
+  ADD KEY `fk_message_annonce` (`id_annonce`);
 
 --
 -- Index pour la table `user_roles`
@@ -164,19 +186,19 @@ ALTER TABLE `utilisateurs`
 -- AUTO_INCREMENT pour la table `annonces`
 --
 ALTER TABLE `annonces`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT pour la table `favoris`
 --
 ALTER TABLE `favoris`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT pour la table `messages`
 --
 ALTER TABLE `messages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `user_roles`
@@ -188,7 +210,7 @@ ALTER TABLE `user_roles`
 -- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- Contraintes pour les tables déchargées
@@ -205,6 +227,7 @@ ALTER TABLE `favoris`
 -- Contraintes pour la table `messages`
 --
 ALTER TABLE `messages`
+  ADD CONSTRAINT `fk_message_annonce` FOREIGN KEY (`id_annonce`) REFERENCES `annonces` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `messages_ibfk_1` FOREIGN KEY (`expediteur_id`) REFERENCES `utilisateurs` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `messages_ibfk_2` FOREIGN KEY (`destinataire_id`) REFERENCES `utilisateurs` (`id`) ON DELETE CASCADE;
 
