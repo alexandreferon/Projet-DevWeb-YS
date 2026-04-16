@@ -2,14 +2,12 @@
 session_start();
 include('config/db_connect.php');
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: connexion.php');
-    exit;
-}
+if (!isset($_SESSION['user_id'])) { header('Location: connexion.php'); exit; }
 
 $user_id = $_SESSION['user_id'];
+$base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
 
-// Jointure pour récupérer les détails des annonces mises en favoris
+// On récupère les favoris
 $query = "SELECT a.* FROM annonces a 
           JOIN favoris f ON a.id = f.annonce_id 
           WHERE f.utilisateur_id = ?";
@@ -23,53 +21,42 @@ $resultat = mysqli_stmt_get_result($stmt);
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Mes Favoris - YS</title>
+    <title>Mes Favoris</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; }
-        .ys-navbar { background-color: #212529; }
-        .card { border-radius: 12px; overflow: hidden; }
-        .btn-delete { color: #dc3545; text-decoration: none; font-size: 0.9rem; }
+        .card-img-top { height: 180px; object-fit: cover; }
+        .card { border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
     </style>
 </head>
-<body>
-
-
-
-<nav class="navbar navbar-expand-lg navbar-dark ys-navbar shadow-sm mb-4">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="index.php">YS</a>
-        <div class="d-flex align-items-center">
-            <span class="text-white me-3">Bonjour, <?= htmlspecialchars($_SESSION['user_nom']) ?></span>
-            <a href="index.php" class="btn btn-outline-light btn-sm">Accueil</a>
-        </div>
+<body class="bg-light">
+<div class="container mt-5">
+    <div class="d-flex justify-content-between mb-4">
+        <h2>Mes Favoris ❤️</h2>
+        <a href="index.php" class="btn btn-secondary">Retour</a>
     </div>
-</nav>
 
-<a href="recherche.php" class="btn btn-secondary mb-3">⬅ Retour</a>
-
-<div class="container">
-    <h2 class="mb-4">Mes favoris ❤️</h2>
     <div class="row">
         <?php while ($annonce = mysqli_fetch_assoc($resultat)): ?>
-            <div class="col-md-4 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <?php if ($annonce['image_url']): ?>
-                        <img src="<?= $annonce['image_url'] ?>" class="card-img-top" alt="Annonce" style="height: 200px; object-fit: cover;">
-                    <?php endif; ?>
+            <div class="col-md-4 mb-4"> <div class="card h-100">
+                    <?php 
+                        $img = !empty($annonce['image_url']) ? $base . $annonce['image_url'] : 'https://via.placeholder.com/300x200';
+                    ?>
+                    <img src="<?= $img ?>" class="card-img-top">
                     <div class="card-body">
                         <h5 class="card-title"><?= htmlspecialchars($annonce['titre']) ?></h5>
-                        <p class="card-text text-muted small"><?= htmlspecialchars(substr($annonce['description'], 0, 100)) ?>...</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-dark"><?= number_format($annonce['prix'], 2) ?> €</span>
-                            <a href="delete_fav.php?id=<?= $annonce['id'] ?>" class="btn-delete">Supprimer</a>
-                        </div>
+                        <p class="fw-bold text-primary"><?= number_format($annonce['prix'], 2) ?> €</p>
+                        
+                          <div class="d-grid gap-2">
+                              <a href="discussion.php?id_annonce=<?= $annonce['id'] ?>&id_vendeur=<?= $annonce['user_id'] ?>" class="btn btn-primary">
+                                  💬 Chat avec le vendeur
+                              </a>
+                              <a href="delete_fav.php?id=<?= $annonce['id'] ?>" class="btn btn-sm btn-outline-danger">Supprimer</a>
+                          </div>
                     </div>
                 </div>
             </div>
         <?php endwhile; ?>
     </div>
 </div>
-
 </body>
 </html>
